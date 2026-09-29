@@ -965,3 +965,13 @@ The floating route popover is gone; delay/risk shard cards stay as popovers, sin
 - **Other projects:** t0 and t2 read "This schedule ships no recovery routes". Schependomlaan's FORGED route selects, takes and reverts through the panel.
 - **Layout:** at 420 px the column stacks under the scene with detail and resting views legible. The demo tour renders narration above Your route and alerts.
 - **Checks:** zero page/console errors throughout; `tsc --noEmit` clean; ESLint on touched files identical to HEAD (diffed).
+
+### 2026-09-29 — Audit of merged main (fab20af) + lint cleanup
+
+- Audit: merged `main` tree == `9004248`. Engine run on real `data.json` (DERIVED): t0 29 Jan 2027 (0 d); t1 4 Feb 2027 (6 d, Engineering 6 d); t1 + Detailed Design → 30 Jan; + second crane → 29 Jan; Design Review → 0 d; t2 27 Jan 2027 (stated 22 Jan). t1 `availableRecovery` == `recovery-plan.json`.
+- Fixed all 6 ESLint errors: `DemoTour`/`PhaseSwitcher` read sessionStorage/URL via `useSyncExternalStore` (no setState in effect); `ScheduleNavigator3D` card anchor carries `forId` instead of being reset in an effect, `revealSidePanel` declared before use; `AppShell` brand link uses `next/link`; `prefer-const` in `pathMeshes`. Removed unused `addDays`, `formatScrubDay`, `pctToY`, `shardTotal`/`clusterTotal` reads.
+- `substation-t2/README.md`: finish now states engine 27 Jan vs re-issue's 22 Jan.
+- Deleted stray `dashboard/dbg.tmp.js`, `edge_err.txt`, `PROJECT_STATUS_REPORT.md` (2026-09-09 diagnostic, superseded).
+- Left: 6 warnings (intentional `selected?.id` deps, `window.location` navigation in `demoTour.ts`, unused `milestoneDelayBands` in `journeyController.ts` — the red band is computed but never drawn).
+
+**Verification:** `tsc --noEmit` clean; ESLint 0 errors. Not browser-verified: npm registry blocked in both environments.

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 import { DemoTourButton } from "./DemoTour";
 import { PhaseSwitcher } from "./PhaseSwitcher";
 import styles from "./AppShell.module.css";
@@ -11,10 +12,10 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className={styles.shell}>
       <header className={styles.header}>
-        <a className={styles.brandBlock} href="/">
+        <Link className={styles.brandBlock} href="/">
           <p className={styles.eyebrow}>Project: 1</p>
           <h1 className={styles.brand}>Construction Monitor</h1>
-        </a>
+        </Link>
         <div className={styles.headerRight}>
           <div className={styles.headerControls}>
             <DemoTourButton />

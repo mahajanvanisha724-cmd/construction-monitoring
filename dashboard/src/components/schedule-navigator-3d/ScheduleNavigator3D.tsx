@@ -11,7 +11,6 @@ import type {
 } from "@/lib/schedule-navigator/aggregate";
 import {
   buildScrubSnapshot,
-  formatScrubDay,
   fractionToScrubIso,
   scrubIsoToFraction,
   type ScrubSnapshot,
@@ -99,6 +98,15 @@ export function ScheduleNavigator3D() {
   const controllerRef = useRef<JourneyController | null>(null);
   const scrubberTrackRef = useRef<HTMLDivElement | null>(null);
   const sidePanelRef = useRef<HTMLElement | null>(null);
+
+  /** When the column is stacked under the scene (narrow screens), bring it into view. */
+  function revealSidePanel() {
+    if (typeof window !== "undefined" && window.innerWidth <= 820) {
+      requestAnimationFrame(() =>
+        sidePanelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+      );
+    }
+  }
   const isDraggingScrubberRef = useRef(false);
 
   const [data, setData] = useState<ScheduleNavigatorPayload | null>(null);
@@ -110,8 +118,8 @@ export function ScheduleNavigator3D() {
   const [pendingRoute, setPendingRoute] = useState<string | null>(null);
   /** Chain of route (offer) ids taken, in commit order — mirrored from the controller. */
   const [takenRoutes, setTakenRoutes] = useState<string[]>([]);
-  const [shardTotal, setShardTotal] = useState(0);
-  const [clusterTotal, setClusterTotal] = useState(0);
+  const [, setShardTotal] = useState(0);
+  const [, setClusterTotal] = useState(0);
   const [status, setStatus] = useState("Loading schedule…");
   const [booting, setBooting] = useState(true);
   const [bootProgress, setBootProgress] = useState(0);
@@ -122,7 +130,7 @@ export function ScheduleNavigator3D() {
   const [criticalPathVisible, setCriticalPathVisible] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [cardAnchor, setCardAnchor] = useState<
-    { x: number; y: number; onScreen: boolean } | null
+    { forId: string; x: number; y: number; onScreen: boolean } | null
   >(null);
 
   useEffect(() => {
@@ -341,10 +349,8 @@ export function ScheduleNavigator3D() {
   // the subject as the camera orbits/reframes instead of sitting in a fixed
   // corner disconnected from what was clicked.
   useEffect(() => {
-    if (!selected) {
-      setCardAnchor(null);
-      return;
-    }
+    if (!selected) return;
+    const forId = selected.id;
     let raf = 0;
     const tick = () => {
       const controller = controllerRef.current;
@@ -359,6 +365,7 @@ export function ScheduleNavigator3D() {
       } else {
         const hostRect = host.getBoundingClientRect();
         setCardAnchor({
+          forId,
           x: hostRect.left + local.x,
           y: hostRect.top + local.y,
           onScreen: local.onScreen,
@@ -515,14 +522,6 @@ export function ScheduleNavigator3D() {
     controllerRef.current?.setScrubbing(false);
   };
 
-  /** When the column is stacked under the scene (narrow screens), bring it into view. */
-  function revealSidePanel() {
-    if (typeof window !== "undefined" && window.innerWidth <= 820) {
-      requestAnimationFrame(() =>
-        sidePanelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
-      );
-    }
-  }
 
   const onSelectRoute = (offer: RecoveryOffer) => {
     setSelected(null);
@@ -853,7 +852,7 @@ export function ScheduleNavigator3D() {
         </div>
       </div>
 
-      {selected && cardAnchor && (() => {
+      {selected && cardAnchor && cardAnchor.forId === selected.id && (() => {
         const { left, top } = clampCardPosition(cardAnchor.x, cardAnchor.y);
         const cardCenterY = top + 40;
         const leaderTargetX = cardAnchor.x < left ? left : left + FLOATING_CARD_WIDTH;

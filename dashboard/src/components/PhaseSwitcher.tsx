@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { PHASES, SUPPORTING } from "@/lib/projects";
 import styles from "./PhaseSwitcher.module.css";
 
@@ -15,12 +15,15 @@ import styles from "./PhaseSwitcher.module.css";
  * once per mount from its payload, so switching projects is a remount
  * either way.
  */
-export function PhaseSwitcher() {
-  const [current, setCurrent] = useState("");
+const noopSubscribe = () => () => {};
 
-  useEffect(() => {
-    setCurrent(new URLSearchParams(window.location.search).get("project") ?? "");
-  }, []);
+export function PhaseSwitcher() {
+  // URL only changes via full navigation, so there is nothing to subscribe to.
+  const current = useSyncExternalStore(
+    noopSubscribe,
+    () => new URLSearchParams(window.location.search).get("project") ?? "",
+    () => ""
+  );
 
   return (
     <label className={styles.wrap}>

@@ -68,7 +68,6 @@ import {
   mountAxisLabelElements,
   mountPctLabelElements,
   mountRouteLabelElement,
-  pctToY,
   syncAllProjectedLabels,
   syncPlayheadLabel,
   updateLabelWorldFromRoot,

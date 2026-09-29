@@ -1,11 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useSyncExternalStore } from "react";
 import {
   TOUR_STEPS,
   advanceTour,
   exitTour,
   getTourStep,
+  setTourStep,
   startTour,
 } from "@/lib/demoTour";
 import styles from "./DemoTour.module.css";
@@ -24,21 +25,21 @@ import styles from "./DemoTour.module.css";
  */
 const CHANGE_EVENT = "navigator-demo-tour-change";
 
-function useTourStep(): [number | null, (next: number | null) => void, boolean] {
-  const [step, setStep] = useState<number | null>(null);
-  const [ready, setReady] = useState(false);
+function subscribeTour(onChange: () => void) {
+  window.addEventListener(CHANGE_EVENT, onChange);
+  return () => window.removeEventListener(CHANGE_EVENT, onChange);
+}
 
-  useEffect(() => {
-    setStep(getTourStep());
-    setReady(true);
-    const sync = () => setStep(getTourStep());
-    window.addEventListener(CHANGE_EVENT, sync);
-    return () => window.removeEventListener(CHANGE_EVENT, sync);
-  }, []);
+const noopSubscribe = () => () => {};
+
+function useTourStep(): [number | null, (next: number | null) => void, boolean] {
+  const step = useSyncExternalStore(subscribeTour, getTourStep, () => null);
+  // false during SSR and hydration, true once running on the client.
+  const ready = useSyncExternalStore(noopSubscribe, () => true, () => false);
 
   const update = useCallback((next: number | null) => {
     if (next === null) exitTour();
-    setStep(next);
+    else setTourStep(next);
     window.dispatchEvent(new Event(CHANGE_EVENT));
   }, []);
 

@@ -117,12 +117,6 @@ function parseTime(iso: string): number {
   return new Date(`${iso}T00:00:00Z`).getTime();
 }
 
-function addDays(iso: string, days: number): string {
-  const d = new Date(`${iso}T00:00:00Z`);
-  d.setUTCDate(d.getUTCDate() + days);
-  return d.toISOString().slice(0, 10);
-}
-
 export function isDelayWaypoint(waypoint: NavigatorWaypoint): boolean {
   return waypoint.localDelayDays > 0;
 }

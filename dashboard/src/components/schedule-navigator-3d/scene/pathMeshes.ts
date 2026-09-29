@@ -567,7 +567,7 @@ export function createTodayMarker(
   // Orient so local +Y is world up; faces across the path
   const forward = tangent.clone().normalize();
   const up = new THREE.Vector3(0, 1, 0);
-  let side = new THREE.Vector3().crossVectors(up, forward);
+  const side = new THREE.Vector3().crossVectors(up, forward);
   if (side.lengthSq() < 1e-5) side.set(0, 0, 1);
   side.normalize();
   const basis = new THREE.Matrix4().makeBasis(side, up, forward);

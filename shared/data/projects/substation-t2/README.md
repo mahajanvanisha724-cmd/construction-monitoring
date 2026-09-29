@@ -19,7 +19,11 @@ happened. What changes is the forward plan, re-issued to claw back time:
 | Pre-commissioning | 14 – 24 Jan | 7 – 17 Jan | 7 days |
 | Energisation | 24 – 29 Jan | 17 – 22 Jan | 7 days |
 
-Project finish moves from 29 Jan 2027 to 22 Jan 2027.
+The re-issue *states* a finish of 22 Jan 2027. The navigator's CPM engine
+projects **27 Jan 2027**: the authored Protection & Control start ignores the
+5-day lag after Transformer Erection's revised finish (28 Dec + 5). That is
+2 days earlier than the original 29 Jan plan and 8 days earlier than
+`substation-t1`'s projected 4 Feb.
 
 This is the navigator's stage-3 view: the alternate route, with the delay
 history still visible behind it.
